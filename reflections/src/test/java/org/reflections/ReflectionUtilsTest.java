@@ -14,12 +14,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 import static com.google.common.collect.Collections2.transform;
 import static org.junit.Assert.assertEquals;
@@ -83,22 +78,23 @@ public class ReflectionUtilsTest {
     }
 
     @Test public void withAssignable() {
-        Set<Method> allMethods = getAllMethods(Collections.class, withParameters(List.class, Random.class));
-        assertThat(allMethods, names("shuffle"));
+		Set<Method> allMethods = getAllMethods(Collections.class, withParameters(List.class, Random.class));
+		assertThat(allMethods, names("shuffle"));
 
-        Set<Method> allMethods1 = getAllMethods(Collections.class, withParametersAssignableTo(Iterable.class, Serializable.class));
-        assertTrue(allMethods1.contains(allMethods.iterator().next()));
+		// Set<Method> allMethods1 = getAllMethods(Collections.class, withParametersAssignableTo(Iterable.class, Serializable.class));
+		Set<Method> allMethods1 = getAllMethods(Collections.class, withParametersAssignableTo(new ArrayList<Object>().getClass(), Random.class));
+		assertTrue(allMethods1.contains(allMethods.iterator().next()));
 
-        Set<Method> returnMember = getAllMethods(Class.class, withReturnTypeAssignableTo(Member.class));
-        Set<Method> returnsAssignableToMember = getAllMethods(Class.class, withReturnType(Method.class));
+		Set<Method> returnMember = getAllMethods(Class.class, withReturnTypeAssignableTo(Member.class));
+		Set<Method> returnsAssignableToMember = getAllMethods(Class.class, withReturnType(Method.class));
 
-        assertTrue(returnMember.containsAll(returnsAssignableToMember));
-        assertFalse(returnsAssignableToMember.containsAll(returnMember));
+		assertTrue(returnMember.containsAll(returnsAssignableToMember));
+		assertFalse(returnsAssignableToMember.containsAll(returnMember));
 
-        returnsAssignableToMember = getAllMethods(Class.class, withReturnType(Field.class));
-        assertTrue(returnMember.containsAll(returnsAssignableToMember));
-        assertFalse(returnsAssignableToMember.containsAll(returnMember));
-    }
+		returnsAssignableToMember = getAllMethods(Class.class, withReturnType(Field.class));
+		assertTrue(returnMember.containsAll(returnsAssignableToMember));
+		assertFalse(returnsAssignableToMember.containsAll(returnMember));
+	}
 
     @Test
     public void getAllAndReflections() {
