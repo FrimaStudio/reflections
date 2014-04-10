@@ -243,7 +243,12 @@ public abstract class ReflectionUtils {
                     Class<?>[] parameterTypes = parameterTypes(input);
                     if (parameterTypes.length == types.length) {
                         for (int i = 0; i < parameterTypes.length; i++) {
-                            if (!parameterTypes[i].isAssignableFrom(types[i])) {
+	                        if (types[i] == null) {
+		                        if (parameterTypes[i].isPrimitive()) {
+			                        return false;
+		                        }
+	                        }
+                            else if (!parameterTypes[i].isAssignableFrom(types[i])) {
                                 return false;
                             }
                         }
