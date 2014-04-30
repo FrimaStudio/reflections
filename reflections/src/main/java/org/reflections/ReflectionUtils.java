@@ -6,6 +6,7 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import org.reflections.util.ClasspathHelper;
+import org.reflections.util.NumericUtils;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -239,23 +240,33 @@ public abstract class ReflectionUtils {
     public static Predicate<Member> withParametersAssignableTo(final Class... types) {
         return new Predicate<Member>() {
             public boolean apply(@Nullable Member input) {
-                if (input != null) {
-                    Class<?>[] parameterTypes = parameterTypes(input);
-                    if (parameterTypes.length == types.length) {
-                        for (int i = 0; i < parameterTypes.length; i++) {
-	                        if (types[i] == null) {
-		                        if (parameterTypes[i].isPrimitive()) {
-			                        return false;
-		                        }
+            if (input != null) {
+                Class<?>[] parameterTypes = parameterTypes(input);
+                if (parameterTypes.length == types.length) {
+                    for (int i = 0; i < parameterTypes.length; i++) {
+	                    Class type = types[i];
+	                    Class parameterType = parameterTypes[i];
+	                    // if type is null, check if parameterType is nullable.
+                        if (type == null) {
+	                        if (parameterType.isPrimitive()) {
+		                        return false;
 	                        }
-                            else if (!parameterTypes[i].isAssignableFrom(types[i])) {
-                                return false;
-                            }
                         }
-                        return true;
+                        // if type is a numeric type (primitive or not), use custom NumericUtils.isAssignableFrom() comparison.
+                        else if (NumericUtils.isNumericType(type)) {
+	                        if (!NumericUtils.isAssignableFrom(type, parameterType)) {
+		                        return false;
+	                        }
+                        }
+                        // otherwise, perform standard Class.isAssignableFrom() comparison.
+                        else if (!parameterType.isAssignableFrom(type)) {
+                            return false;
+                        }
                     }
+                    return true;
                 }
-                return false;
+            }
+            return false;
             }
         };
     }
