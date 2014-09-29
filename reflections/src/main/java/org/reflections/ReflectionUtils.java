@@ -253,10 +253,15 @@ public abstract class ReflectionUtils {
 	                        }
                         }
                         // if type is a numeric type (primitive or not), use custom NumericUtils.isAssignableFrom() comparison.
-                        else if (NumericUtils.isNumericType(type)) {
+                        else if (NumericUtils.isNumericType(type) && NumericUtils.isNumericType(parameterType)) {
 	                        if (!NumericUtils.isAssignableFrom(type, parameterType)) {
 		                        return false;
 	                        }
+                        }
+                        else if (type.equals(boolean.class) || type.equals(Boolean.class)) {
+                            if(!parameterType.equals(boolean.class) && !parameterType.equals(Boolean.class)) {
+                                return false;
+                            }
                         }
                         // otherwise, perform standard Class.isAssignableFrom() comparison.
                         else if (!parameterType.isAssignableFrom(type)) {
