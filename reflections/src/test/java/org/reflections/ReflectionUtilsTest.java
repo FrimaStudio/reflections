@@ -6,7 +6,6 @@ import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.junit.Test;
 import org.reflections.scanners.FieldAnnotationsScanner;
-import org.reflections.util.NumberUtility;
 
 import javax.annotation.Nullable;
 import java.lang.annotation.Annotation;
