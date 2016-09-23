@@ -6,6 +6,7 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import org.reflections.util.ClasspathHelper;
+import org.reflections.util.NumericUtils;
 
 import javax.annotation.Nullable;
 import java.lang.annotation.Annotation;
@@ -28,7 +29,7 @@ import static org.reflections.util.Utils.isEmpty;
  *         <li>{@link #getAllMethods(Class, com.google.common.base.Predicate...)}
  *         <li>{@link #getAllConstructors(Class, com.google.common.base.Predicate...)}
  *     </ul>
- *     <p>and predicates included here all starts with "with", such as 
+ *     <p>and predicates included here all starts with "with", such as
  *     <ul>
  *         <li>{@link #withAnnotation(java.lang.annotation.Annotation)}
  *         <li>{@link #withModifier(int)}
@@ -40,15 +41,15 @@ import static org.reflections.util.Utils.isEmpty;
  *         <li>{@link #withReturnType(Class)}
  *         <li>{@link #withType(Class)}
  *         <li>{@link #withTypeAssignableTo}
- *     </ul> 
+ *     </ul>
  *
  *     <p><br>
  *      for example, getting all getters would be:
  *     <pre>
- *      Set&#60Method> getters = getAllMethods(someClasses, 
+ *      Set&#60Method> getters = getAllMethods(someClasses,
  *              Predicates.and(
- *                      withModifier(Modifier.PUBLIC), 
- *                      withPrefix("get"), 
+ *                      withModifier(Modifier.PUBLIC),
+ *                      withPrefix("get"),
  *                      withParametersCount(0)));
  *     </pre>
  * */
@@ -239,13 +240,22 @@ public abstract class ReflectionUtils {
                     Class<?>[] parameterTypes = parameterTypes(input);
                     if (parameterTypes.length == types.length) {
                         for (int i = 0; i < parameterTypes.length; i++) {
-                            if(types[i] == null) {
-                                if(parameterTypes[i].isPrimitive()) {
+                            Class type = types[i];
+                            Class parameterType = parameterTypes[i];
+                            // if type is null, check if parameterType is nullable.
+                            if(type == null) {
+                                if(parameterType.isPrimitive()) {
                                     return false;
                                 }
                             }
-                            else if (!parameterTypes[i].isAssignableFrom(types[i]) ||
-                                    (parameterTypes[i] == Object.class && types[i] != Object.class)) {
+                            // check if numeric types and cast possible
+                            else if(NumericUtils.isNumericType(type)) {
+                                if(!NumericUtils.isAssignableFrom(type, parameterType)) {
+                                    return false;
+                                }
+                            }
+                            else if (!parameterType.isAssignableFrom(type) ||
+                                    (parameterType == Object.class && type != Object.class)) {
                                 return false;
                             }
                         }

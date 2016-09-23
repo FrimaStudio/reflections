@@ -100,6 +100,17 @@ public class ReflectionUtilsTest {
         assertThat(allFields, names("f2"));
     }
 
+    @Test
+    public void numericParametersTest() {
+        Set<Method> methods = getAllMethods(StubClass.class, withParametersAssignableTo(int.class));
+
+        assertEquals(8, methods.size());
+
+        methods = getAllMethods(StubClass.class, withParametersAssignableTo(Integer.class));
+
+        assertEquals(8, methods.size());
+    }
+
     private Set<String> names(Set<? extends Member> o) {
         return Sets.newHashSet(transform(o, new Function<Member, String>() {
             public String apply(@Nullable Member input) {
@@ -120,5 +131,45 @@ public class ReflectionUtilsTest {
                 public void describeTo(Description description) {
                 }
             };
+    }
+
+    private class StubClass
+    {
+        public void stubMethod_byte(byte num) {
+            System.out.println(num);
+        }
+        public void stubMethod_Byte(Byte num) {
+            System.out.println(num);
+        }
+        public void stubMethod_short(short num) {
+            System.out.println(num);
+        }
+        public void stubMethod_Short(Short num) {
+            System.out.println(num);
+        }
+        public void stubMethod_int(int num) {
+            System.out.println(num);
+        }
+        public void stubMethod_Integer(Integer num) {
+            System.out.println(num);
+        }
+        public void stubMethod_long(long num)  {
+            System.out.println(num);
+        }
+        public void stubMethod_Long(Long num) {
+            System.out.println(num);
+        }
+        public void stubMethod_float(float num) {
+            System.out.println(num);
+        }
+        public void stubMethod_Float(Float num) {
+            System.out.println(num);
+        }
+        public void stubMethod_double(double num) {
+            System.out.println(num);
+        }
+        public void stubMethod_Double(Double num) {
+            System.out.println(num);
+        }
     }
 }
