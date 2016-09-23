@@ -243,14 +243,19 @@ public abstract class ReflectionUtils {
                             Class type = types[i];
                             Class parameterType = parameterTypes[i];
                             // if type is null, check if parameterType is nullable.
-                            if(type == null) {
-                                if(parameterType.isPrimitive()) {
+                            if (type == null) {
+                                if (parameterType.isPrimitive()) {
                                     return false;
                                 }
                             }
                             // check if numeric types and cast possible
-                            else if(NumericUtils.isNumericType(type)) {
+                            else if (NumericUtils.isNumericType(type) && NumericUtils.isNumericType(parameterType)) {
                                 if(!NumericUtils.isAssignableFrom(type, parameterType)) {
+                                    return false;
+                                }
+                            }
+                            else if (type.equals(boolean.class) || type.equals(Boolean.class)) {
+                                if (!parameterType.equals(boolean.class) && !parameterType.equals(Boolean.class)) {
                                     return false;
                                 }
                             }

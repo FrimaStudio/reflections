@@ -103,12 +103,16 @@ public class ReflectionUtilsTest {
     @Test
     public void numericParametersTest() {
         Set<Method> methods = getAllMethods(StubClass.class, withParametersAssignableTo(int.class));
-
         assertEquals(8, methods.size());
 
         methods = getAllMethods(StubClass.class, withParametersAssignableTo(Integer.class));
-
         assertEquals(8, methods.size());
+
+        methods = getAllMethods(StubClass.class, withParametersAssignableTo(boolean.class));
+        assertEquals(2, methods.size());
+
+        methods = getAllMethods(StubClass.class, withParametersAssignableTo(Boolean.class));
+        assertEquals(2, methods.size());
     }
 
     private Set<String> names(Set<? extends Member> o) {
@@ -170,6 +174,12 @@ public class ReflectionUtilsTest {
         }
         public void stubMethod_Double(Double num) {
             System.out.println(num);
+        }
+        public void stubMethod_boolean(boolean bool){
+            System.out.println(bool);
+        }
+        public void stubMethod_Boolean(Boolean bool){
+            System.out.println(bool);
         }
     }
 }
