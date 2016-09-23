@@ -2,7 +2,6 @@ package org.reflections;
 
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -240,7 +239,12 @@ public abstract class ReflectionUtils {
                     Class<?>[] parameterTypes = parameterTypes(input);
                     if (parameterTypes.length == types.length) {
                         for (int i = 0; i < parameterTypes.length; i++) {
-                            if (!parameterTypes[i].isAssignableFrom(types[i]) ||
+                            if(types[i] == null) {
+                                if(parameterTypes[i].isPrimitive()) {
+                                    return false;
+                                }
+                            }
+                            else if (!parameterTypes[i].isAssignableFrom(types[i]) ||
                                     (parameterTypes[i] == Object.class && types[i] != Object.class)) {
                                 return false;
                             }
