@@ -399,8 +399,16 @@ public class Reflections {
      * <p/>depends on SubTypesScanner configured
      */
     public <T> Set<Class<? extends T>> getSubTypesOf(final Class<T> type) {
+        return getSubTypesOf(type.getName());
+    }
+
+    /**
+     * gets all sub types in hierarchy of a given type
+     * <p/>depends on SubTypesScanner configured
+     */
+    public <T> Set<Class<? extends T>> getSubTypesOf(final String classCanonicalName) {
         return Sets.newHashSet(ReflectionUtils.<T>forNames(
-                store.getAll(index(SubTypesScanner.class), Arrays.asList(type.getName())), loaders()));
+                store.getAll(index(SubTypesScanner.class), Collections.singletonList(classCanonicalName)), loaders()));
     }
 
     /**
